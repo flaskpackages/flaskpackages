@@ -2,14 +2,12 @@
 import sys
 import click
 
+from flask_packages.web import app
+
 
 @click.command()
 def main(args=None):
-    """Console script for flask_packages."""
-    click.echo("Replace this message by putting your code into "
-               "flask_packages.cli.main")
-    click.echo("See click documentation at https://click.palletsprojects.com/")
-    return 0
+    app.run()
 
 
 if __name__ == "__main__":

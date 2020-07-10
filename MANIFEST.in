@@ -4,6 +4,7 @@ include LICENSE
 include README.rst
 
 recursive-include tests *
+recursive-include flask_packages/templates *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 

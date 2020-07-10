@@ -10,11 +10,17 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+requirements = [
+    'Click>=7.0',
+    'bcrypt',
+    'Flask',
+    'Flask-Security-Too',
+    'flask-mongoengine',
+]
 
-setup_requirements = [ ]
+setup_requirements = []
 
-test_requirements = [ ]
+test_requirements = []
 
 setup(
     author="Flask Packages",
@@ -34,7 +40,7 @@ setup(
     description="Flack Packages Web page",
     entry_points={
         'console_scripts': [
-            'flask_packages=flask_packages.cli:main',
+            'manage=flask_packages.cli:main',
         ],
     },
     install_requires=requirements,
