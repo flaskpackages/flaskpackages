@@ -10,14 +10,13 @@ def db_connection():
     mongopasswd = os.environ["MONGOPASSWD"]
 
     cluster = MongoClient("mongodb+srv://user:"+mongopasswd+"@packagescluster.3irbh.mongodb.net/test?retryWrites=true&w=majority")
-    db = cluster['flask_packages_db']
-    collection = db['flask_packages_collection']
+    db = cluster['flask_db']
+    collection = db['flask_collection']
     #collection.create_index([("name", pymongo.TEXT)], unique=True) LO CREE EN COMPASS
 
     search_packages(collection)
 
 def search_packages(collection):
-    count2 = 0 # Counter for packages (Use as ID for db)
     count = 0 # Counter for search pages in pypy.org
     while count < 41:
         count = count+1
@@ -31,9 +30,7 @@ def search_packages(collection):
         
         # all_packages is the information of all packages in a page.
 
-        for package_info in all_packages: ## sacar count2 de id 
-            count2 = count2 + 1
-            
+        for package_info in all_packages:         
             ### NAME ###
             name = package_info.find('span',{'class':'package-snippet__name'}).text
             # Search the name of the package in the db, if exists, check information for updates. If not, add them to the db.
@@ -50,10 +47,10 @@ def add_package_to_db(package_info, name, collection):
     print(TYELLOW + "agregando: ",name, ENDC)
 
     try:
-        version = package_info.find('span',{'class':'package-snippet__version'}).text
+        lastest_version = package_info.find('span',{'class':'package-snippet__version'}).text
     except:
-        version = ""
-    
+        lastest_version = ""
+
     released = package_info.find('span',{'class':'package-snippet__released'}).text.strip()
 
     project_url = 'https://pypi.org/project/'
@@ -80,14 +77,34 @@ def add_package_to_db(package_info, name, collection):
     maintainer_find = soup.find('span',{'class':'sidebar-section__user-gravatar-text'})
     maintainer = maintainer_find.text.strip()
 
+    ### VERSIONS ###
+
+    url = 'https://pypi.org/project/'
+    add = '/#history'
+    project_url = urllib.parse.urljoin(url, name, add)
+
+    response = requests.get(project_url)
+
+    soup = BeautifulSoup(response.text, 'lxml')
+    versions_number = soup.findAll('a', {'class':['card', 'release__card']})
+    
+    res = []
+
+    for version in versions_number:
+        version_number = version.find('p',{'class':'release__version'}).text.strip()
+        date = version.find('p',{'class':'release__version-date'}).text.strip()
+        res.append({'version':version_number, 'date':date})
+
     package = {
         "name":name,
         "description":description,
-        "version":[version],
+        "lastest_version":[lastest_version],
+        "versions":res,
         "maintainer":maintainer,
         "released":released,
         "homepage":homepage_link
     }
+
     collection.insert_one(package)
 
 def update_package_on_db(package_info, name, collection):
@@ -95,22 +112,21 @@ def update_package_on_db(package_info, name, collection):
     TGREEN = '\033[32m'
     print(TGREEN + "actulizando",name, ENDC)
 
-    ### NO PODEMOS HACER UN APPEND A UN CURSOR DE MONGO
-
     ### VERSION ###
     
-    #try:
     version = package_info.find('span',{'class':'package-snippet__version'}).text
     search = collection.find({"name":name})
     for item in search:
-        version_db = item["version"]
-    if version == version_db[0]:
+        version_db = (item["lastest_version"][0])
+    if version == version_db:
         return
-    version = ""
-    print('siguio')
-    old_package = []
-    old_package["version"].append(version)
+    
+    old_package = collection.find_one({"name":name})
+    
+    old_package["lastest_version"].append(version)
+
     ### RELEASED ###
+
     released = package_info.find('span',{'class':'package-snippet__released'}).text.strip()
     old_package["released"] = released
 
@@ -133,7 +149,6 @@ def update_package_on_db(package_info, name, collection):
 
     old_package["description"] = description
 
-    
     ### HOMEPAGE LINK ###
 
     try:
@@ -150,11 +165,32 @@ def update_package_on_db(package_info, name, collection):
     maintainer = maintainer_find.text.strip()
 
     old_package["maintainer"] = maintainer
-    collection.update_one({'name': name}, {'$set': old_package})
+    
+    ### VERSIONS ###
+    
+    url = 'https://pypi.org/project/'
+    add = '/#history'
+    project_url = urllib.parse.urljoin(url, name, add)
+
+    response = requests.get(project_url)
+
+    soup = BeautifulSoup(response.text, 'lxml')
+    versions_number = soup.findAll('a', {'class':['card', 'release__card']})
+    
+    res = []
+
+    for version in versions_number:
+        version_number = version.find('p',{'class':'release__version'}).text.strip()
+        date = version.find('p',{'class':'release__version-date'}).text.strip()
+        res.append({'version':version_number, 'date':date})
+
+    old_package["versions"] = res
+    old_package.pop('_id')
+    collection.update_one({"name":name},{'$set':old_package})
 
 if __name__ == "__main__":
     db_connection()
 
 
     ### DEVOLVER ESTO 
-    ### https://pypi.org/project/cinq-auditor-vpc-flowlogs/2.1.1/#files OBTENER SHA256 y LINK`
+    ### https://pypi.org/project/cinq-auditor-vpc-flowlogs/2.1.1/#files OBTENER SHA256 y LINK` {"version":"1.0.1", "date":"23.08.2000(DATETIME)"}
