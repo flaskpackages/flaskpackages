@@ -12,7 +12,6 @@ def db_connection():
     cluster = MongoClient("mongodb+srv://user:"+mongopasswd+"@packagescluster.3irbh.mongodb.net/test?retryWrites=true&w=majority")
     db = cluster['flask_db']
     collection = db['flask_collection']
-    #collection.create_index([("name", pymongo.TEXT)], unique=True) LO CREE EN COMPASS
 
     search_packages(collection)
 
@@ -34,7 +33,7 @@ def search_packages(collection):
             ### NAME ###
             name = package_info.find('span',{'class':'package-snippet__name'}).text
             # Search the name of the package in the db, if exists, check information for updates. If not, add them to the db.
-            find_on_db = list(collection.find({"name":name})) ### VOLVI A LA LISTA PQ NO LO PUDE HACER FUNCIONAR CON EL COL.FIND().COUNT()
+            find_on_db = list(collection.find({"name":name})) 
             if find_on_db == []:
                 add_package_to_db(package_info, name, collection)
             else:
@@ -50,8 +49,6 @@ def add_package_to_db(package_info, name, collection):
         lastest_version = package_info.find('span',{'class':'package-snippet__version'}).text
     except:
         lastest_version = ""
-
-    released = package_info.find('span',{'class':'package-snippet__released'}).text.strip()
 
     project_url = 'https://pypi.org/project/'
     
@@ -92,8 +89,21 @@ def add_package_to_db(package_info, name, collection):
 
     for version in versions_number:
         version_number = version.find('p',{'class':'release__version'}).text.strip()
-        date = version.find('p',{'class':'release__version-date'}).text.strip()
-        res.append({'version':version_number, 'date':date})
+        date_box = version.find('p',{'class':'release__version-date'})
+        try:
+            date = date_box.find('time')['datetime']
+            url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'lxml')
+            link_block = soup.find('th', {'scope':'row'})
+            link = link_block.find('a')['href']
+            sha256 = soup.find('code').text 
+        except:
+            continue    
+
+        res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
+
+    ### DOWNLOAD LINK & SHA256 ###
 
     package = {
         "name":name,
@@ -101,7 +111,6 @@ def add_package_to_db(package_info, name, collection):
         "lastest_version":[lastest_version],
         "versions":res,
         "maintainer":maintainer,
-        "released":released,
         "homepage":homepage_link
     }
 
@@ -166,8 +175,8 @@ def update_package_on_db(package_info, name, collection):
 
     old_package["maintainer"] = maintainer
     
-    ### VERSIONS ###
-    
+    ### VERSIONS, DOWNLOAD LINK & SHA256 ###
+
     url = 'https://pypi.org/project/'
     add = '/#history'
     project_url = urllib.parse.urljoin(url, name, add)
@@ -181,16 +190,21 @@ def update_package_on_db(package_info, name, collection):
 
     for version in versions_number:
         version_number = version.find('p',{'class':'release__version'}).text.strip()
-        date = version.find('p',{'class':'release__version-date'}).text.strip()
-        res.append({'version':version_number, 'date':date})
+        date_box = version.find('p',{'class':'release__version-date'})
+        date = date_box.find('time')['datetime']
+        url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'lxml')
+        link_block = soup.find('th', {'scope':'row'})
+        link = link_block.find('a')['href']
+        sha256 = soup.find('code').text 
+
+        res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
 
     old_package["versions"] = res
     old_package.pop('_id')
     collection.update_one({"name":name},{'$set':old_package})
 
+
 if __name__ == "__main__":
     db_connection()
-
-
-    ### DEVOLVER ESTO 
-    ### https://pypi.org/project/cinq-auditor-vpc-flowlogs/2.1.1/#files OBTENER SHA256 y LINK` {"version":"1.0.1", "date":"23.08.2000(DATETIME)"}
