@@ -34,6 +34,9 @@ def search_packages(collection):
             name = package_info.find('span',{'class':'package-snippet__name'}).text
             # Search the name of the package in the db, if exists, check information for updates. If not, add them to the db.
             find_on_db = list(collection.find({"name":name})) 
+            
+            print(name)
+            
             if find_on_db == []:
                 add_package_to_db(package_info, name, collection)
             else:
@@ -88,20 +91,34 @@ def add_package_to_db(package_info, name, collection):
     res = []
 
     for version in versions_number:
-        version_number = version.find('p',{'class':'release__version'}).text.strip()
-        date_box = version.find('p',{'class':'release__version-date'})
         try:
+            version_number = version.find('p',{'class':'release__version'}).text.strip()
+            date_box = version.find('p',{'class':'release__version-date'})
             date = date_box.find('time')['datetime']
             url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
             response = requests.get(url)
             soup = BeautifulSoup(response.text, 'lxml')
             link_block = soup.find('th', {'scope':'row'})
             link = link_block.find('a')['href']
-            sha256 = soup.find('code').text 
+            url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'lxml')
+            link_block = soup.find('th', {'scope':'row'})
+        
+            try:
+                link = link_block.find('a')['href']
+                sha256 = soup.find('code').text
+            except:
+                version_number = (version_number.splitlines()[0])
+                url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
+                response = requests.get(url)
+                soup = BeautifulSoup(response.text, 'lxml')
+                link_block = soup.find('th', {'scope':'row'})
+                link = link_block.find('a')['href']
+                sha256 = soup.find('code').text 
+            res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
         except:
-            continue    
-
-        res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
+            continue
 
     ### DOWNLOAD LINK & SHA256 ###
 
@@ -117,19 +134,20 @@ def add_package_to_db(package_info, name, collection):
     collection.insert_one(package)
 
 def update_package_on_db(package_info, name, collection):
-    ENDC = '\033[m'
-    TGREEN = '\033[32m'
-    print(TGREEN + "actulizando",name, ENDC)
-
     ### VERSION ###
     
     version = package_info.find('span',{'class':'package-snippet__version'}).text
     search = collection.find({"name":name})
     for item in search:
-        version_db = (item["lastest_version"][0])
+        version_db = (item["lastest_version"][-1])
     if version == version_db:
         return
-    
+
+    ENDC = '\033[m'
+    TGREEN = '\033[32m'
+    print(TGREEN + "actualizando",name, ENDC)
+    print('db version: ', version_db)
+    print('new version: ', version)
     old_package = collection.find_one({"name":name})
     
     old_package["lastest_version"].append(version)
@@ -189,15 +207,34 @@ def update_package_on_db(package_info, name, collection):
     res = []
 
     for version in versions_number:
-        version_number = version.find('p',{'class':'release__version'}).text.strip()
-        date_box = version.find('p',{'class':'release__version-date'})
-        date = date_box.find('time')['datetime']
-        url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'lxml')
-        link_block = soup.find('th', {'scope':'row'})
-        link = link_block.find('a')['href']
-        sha256 = soup.find('code').text 
+        try:
+            version_number = version.find('p',{'class':'release__version'}).text.strip()
+            date_box = version.find('p',{'class':'release__version-date'})
+            date = date_box.find('time')['datetime']
+            url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'lxml')
+            link_block = soup.find('th', {'scope':'row'})
+            link = link_block.find('a')['href']
+            url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'lxml')
+            link_block = soup.find('th', {'scope':'row'})
+        
+            try:
+                link = link_block.find('a')['href']
+                sha256 = soup.find('code').text
+            except:
+                version_number = (version_number.splitlines()[0])
+                url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
+                response = requests.get(url)
+                soup = BeautifulSoup(response.text, 'lxml')
+                link_block = soup.find('th', {'scope':'row'})
+                link = link_block.find('a')['href']
+                sha256 = soup.find('code').text 
+            res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
+        except:
+            continue
 
         res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
 
