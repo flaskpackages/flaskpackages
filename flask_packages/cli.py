@@ -4,7 +4,6 @@ import click
 
 from flask_packages.web import app
 
-
 @click.command()
 def main(args=None):
     app.run()

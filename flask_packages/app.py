@@ -2,21 +2,18 @@ import os
 
 from flask import Flask
 
+db_password = os.environ['DBPASSWD']
+db_connection = os.environ['DBCONN']
+db_name = os.environ['DBNAME']
+password_salt = os.environ['PASSWDSALT']
+secret_key = os.environ['SECR_KEY']
 
 def create_app(template_folder):
     # Create app
     app = Flask(__name__, template_folder=template_folder)
     app.config['DEBUG'] = True
-
-    # Generate a nice key using secrets.token_urlsafe()
-    app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY", 'TEST')
-    # Bcrypt is set as default SECURITY_PASSWORD_HASH, which requires a salt
-    # Generate a good salt using: secrets.SystemRandom().getrandbits(128)
-    app.config['SECURITY_PASSWORD_SALT'] = os.environ.get("SECURITY_PASSWORD_SALT", 'TEST')
-
-    # MongoDB Config
-    app.config['MONGODB_DB'] = 'flackpackages'
-    app.config['MONGODB_HOST'] = 'localhost'
-    app.config['MONGODB_PORT'] = 27017
-
+    app.config['SECURITY_PASSWORD_SALT'] = password_salt
+    app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
+    app.config['MONGODB_HOST'] = {'mongodb+srv://user:'+db_password+'@'+db_connection+'/'+db_name+'?retryWrites=true&w=majority'}
+    app.config['SECRET_KEY'] = secret_key
     return app
