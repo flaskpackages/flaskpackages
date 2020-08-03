@@ -17,7 +17,7 @@ def db_connection():
 
 def search_packages(collection):
     count = 0 # Counter for search pages in pypy.org
-    while count < 41:
+    while count < 42:
         count = count+1
         url = 'https://pypi.org/search/?c=Framework+%3A%3A+Flask&o=&q=&page='+str(count)
         
@@ -77,13 +77,30 @@ def add_package_to_db(package_info, name, collection):
     maintainer_find = soup.find('span',{'class':'sidebar-section__user-gravatar-text'})
     maintainer = maintainer_find.text.strip()
 
+    ### CLASSIFIERS ### 
+
+    all_packages = soup.find('ul',{'class':'sidebar-section__classifiers'}) 
+
+    lis = all_packages.find_all('li')
+    classifiers = {}
+    for item in lis:
+        if item.find('strong'):
+            title = item.find('strong').text
+            all_tags = item.find_all('a')
+            tags = []
+            for tag in all_tags:
+                tag = tag.text.strip()
+                tags.append(tag)
+            classifiers[title] = tags
+    
+
     ### VERSIONS ###
 
     url = 'https://pypi.org/project/'
     add = '/#history'
-    project_url = urllib.parse.urljoin(url, name, add)
+    project_url_versions = urllib.parse.urljoin(url, name, add)
 
-    response = requests.get(project_url)
+    response = requests.get(project_url_versions)
 
     soup = BeautifulSoup(response.text, 'lxml')
     versions_number = soup.findAll('a', {'class':['card', 'release__card']})
@@ -120,7 +137,6 @@ def add_package_to_db(package_info, name, collection):
         except:
             continue
 
-    ### DOWNLOAD LINK & SHA256 ###
 
     package = {
         "name":name,
@@ -128,7 +144,9 @@ def add_package_to_db(package_info, name, collection):
         "lastest_version":[lastest_version],
         "versions":res,
         "maintainer":maintainer,
-        "homepage":homepage_link
+        "homepage":homepage_link,
+        "classifiers":classifiers,
+        'pypi_link':project_url
     }
 
     collection.insert_one(package)
@@ -150,7 +168,7 @@ def update_package_on_db(package_info, name, collection):
     print('new version: ', version)
     old_package = collection.find_one({"name":name})
     
-    old_package["lastest_version"].append(version)
+    old_package["lastest_version"] = version
 
     ### RELEASED ###
 
@@ -165,6 +183,23 @@ def update_package_on_db(package_info, name, collection):
 
     soup = BeautifulSoup(response.content, 'html.parser')
     
+
+    ### CLASSIFIERS ### 
+
+    all_packages = soup.find('ul',{'class':'sidebar-section__classifiers'}) 
+
+    lis = all_packages.find_all('li')
+    classifiers = {}
+    for item in lis:
+        if item.find('strong'):
+            title = item.find('strong').text
+            all_tags = item.find_all('a')
+            tags = []
+            for tag in all_tags:
+                tag = tag.text.strip()
+                tags.append(tag)
+            classifiers[title] = tags
+
     ### DESCRIPTION ###
     
     find_description = soup.find_all('div',{'class':'project-description'})
@@ -197,9 +232,9 @@ def update_package_on_db(package_info, name, collection):
 
     url = 'https://pypi.org/project/'
     add = '/#history'
-    project_url = urllib.parse.urljoin(url, name, add)
+    project_url_versions = urllib.parse.urljoin(url, name, add)
 
-    response = requests.get(project_url)
+    response = requests.get(project_url_versions)
 
     soup = BeautifulSoup(response.text, 'lxml')
     versions_number = soup.findAll('a', {'class':['card', 'release__card']})
@@ -238,10 +273,11 @@ def update_package_on_db(package_info, name, collection):
 
         res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
 
+    old_package['project_url'] = project_url
+    old_package['classifiers'] = classifiers
     old_package["versions"] = res
     old_package.pop('_id')
     collection.update_one({"name":name},{'$set':old_package})
-
 
 if __name__ == "__main__":
     db_connection()
