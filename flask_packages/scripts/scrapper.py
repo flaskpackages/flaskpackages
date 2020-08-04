@@ -7,11 +7,11 @@ from pymongo import MongoClient
 
 
 def db_connection():
-    mongopasswd = os.environ["MONGOPASSWD"]
+    mongopasswd = os.environ["DBPASSWD"]
 
     cluster = MongoClient("mongodb+srv://user:"+mongopasswd+"@packagescluster.3irbh.mongodb.net/test?retryWrites=true&w=majority")
     db = cluster['flask_db']
-    collection = db['flask_collection']
+    collection = db['flask_packages']
 
     search_packages(collection)
 
@@ -48,10 +48,7 @@ def add_package_to_db(package_info, name, collection):
     TYELLOW = '\033[93m'
     print(TYELLOW + "agregando: ",name, ENDC)
 
-    try:
-        lastest_version = package_info.find('span',{'class':'package-snippet__version'}).text
-    except:
-        lastest_version = ""
+    lastest_version = package_info.find('span',{'class':'package-snippet__version'}).text
 
     project_url = 'https://pypi.org/project/'
     
@@ -141,7 +138,7 @@ def add_package_to_db(package_info, name, collection):
     package = {
         "name":name,
         "description":description,
-        "lastest_version":[lastest_version],
+        "lastest_version":lastest_version,
         "versions":res,
         "maintainer":maintainer,
         "homepage":homepage_link,
@@ -157,10 +154,9 @@ def update_package_on_db(package_info, name, collection):
     version = package_info.find('span',{'class':'package-snippet__version'}).text
     search = collection.find({"name":name})
     for item in search:
-        version_db = (item["lastest_version"][-1])
+        version_db = (item["lastest_version"])
     if version == version_db:
         return
-
     ENDC = '\033[m'
     TGREEN = '\033[32m'
     print(TGREEN + "actualizando",name, ENDC)
@@ -273,7 +269,7 @@ def update_package_on_db(package_info, name, collection):
 
         res.append({'version':version_number, 'date':date, 'link':link, 'sha256':sha256})
 
-    old_package['project_url'] = project_url
+    old_package['pypi_link'] = project_url
     old_package['classifiers'] = classifiers
     old_package["versions"] = res
     old_package.pop('_id')
