@@ -4,7 +4,7 @@ from flask import Flask
 
 db_password = os.environ['DBPASSWD']
 db_connection = os.environ['DBCONN']
-db_name = os.environ['DBNAME']
+db_name = 'flask_db'
 password_salt = os.environ['PASSWDSALT']
 secret_key = os.environ['SECR_KEY']
 

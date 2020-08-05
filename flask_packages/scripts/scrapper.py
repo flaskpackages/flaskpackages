@@ -11,11 +11,13 @@ def db_connection():
 
     cluster = MongoClient("mongodb+srv://user:"+mongopasswd+"@packagescluster.3irbh.mongodb.net/test?retryWrites=true&w=majority")
     db = cluster['flask_db']
+
+    search_packages(db)
+
+def search_packages(db):
+    
     collection = db['flask_packages']
 
-    search_packages(collection)
-
-def search_packages(collection):
     count = 0 # Counter for search pages in pypy.org
     while count < 42:
         count = count+1
@@ -40,7 +42,7 @@ def search_packages(collection):
             if find_on_db == []:
                 add_package_to_db(package_info, name, collection)
             else:
-                update_package_on_db(package_info, name, collection)
+                update_package_on_db(package_info, name, collection, last_updates_collection)
 
 def add_package_to_db(package_info, name, collection):
     
@@ -155,8 +157,7 @@ def update_package_on_db(package_info, name, collection):
     search = collection.find({"name":name})
     for item in search:
         version_db = (item["lastest_version"])
-    if version == version_db:
-        return
+    
     ENDC = '\033[m'
     TGREEN = '\033[32m'
     print(TGREEN + "actualizando",name, ENDC)
@@ -274,6 +275,6 @@ def update_package_on_db(package_info, name, collection):
     old_package["versions"] = res
     old_package.pop('_id')
     collection.update_one({"name":name},{'$set':old_package})
-
+    
 if __name__ == "__main__":
     db_connection()
