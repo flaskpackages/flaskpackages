@@ -23,7 +23,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install wheel flake8 pytest click flask flask_mongoengine flask_security pip install email_validator
+        pip install wheel
+        pip install flake8 pytest click flask flask_mongoengine flask_security pip install email_validator
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
