@@ -32,6 +32,7 @@ class Classifier(db.EmbeddedDocument):
     development_status = db.ListField(db.StringField())
     programming_language = db.ListField(db.StringField())
     topic = db.ListField(db.StringField())
+    framework = db.ListField(db.StringField())
 
 
 class GithubStats(db.EmbeddedDocument):
@@ -41,6 +42,7 @@ class GithubStats(db.EmbeddedDocument):
 
 
 class Project(db.Document):
+    meta = {'collection': 'flask_packages'}
     name = db.StringField(unique=True)
     description = db.StringField()
     lastest_version = db.StringField()
@@ -51,7 +53,7 @@ class Project(db.Document):
     versions = db.ListField(db.EmbeddedDocumentField(Version))
     github_stats = db.EmbeddedDocumentField(GithubStats)
     tags = db.ListField(db.StringField())
-    classifiers = db.ListField(db.EmbeddedDocumentField(Classifier))
+    classifiers = db.EmbeddedDocumentField(Classifier)
 
     release = db.DateTimeField()
     #category = db.ListField(db.Strin
