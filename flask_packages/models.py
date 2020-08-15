@@ -21,20 +21,20 @@ class user(db.Document, UserMixin):
     roles = db.ListField(db.ReferenceField(Role), default=[])
 
 
-class Version(db.Document):
+class Version(db.EmbeddedDocument):
     version = db.StringField()
     date = db.DateTimeField()
     link = db.StringField()
     sha256 = db.StringField()
 
 
-class Classifier(db.Document):
+class Classifier(db.EmbeddedDocument):
     development_status = db.ListField(db.StringField())
     programming_language = db.ListField(db.StringField())
     topic = db.ListField(db.StringField())
 
 
-class GithubStats(db.Document):
+class GithubStats(db.EmbeddedDocument):
     stars = db.IntField()
     open_pr = db.IntField()
     forks = db.IntField()

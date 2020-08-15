@@ -8,6 +8,7 @@ db_name = 'flask_db'
 password_salt = os.environ['PASSWDSALT']
 secret_key = os.environ['SECR_KEY']
 
+
 def create_app(template_folder):
     # Create app
     app = Flask(__name__, template_folder=template_folder)
