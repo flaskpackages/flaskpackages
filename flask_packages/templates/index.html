@@ -1,15 +1,46 @@
-<!doctype html>
+{% extends "base.html" %}
+{% block content %}
 
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>Flask Packages</title>
-  <meta name="description" content="Flask Packages">
-  <meta name="author" content="Flask Packages">
-</head>
-
-<body>
-	<p> Hello World! </p>
-</body>
-</html>
+<section class="page-section Intro" id="Intro">
+    <div class="container">
+        
+        <!-- Intro Section Heading-->
+        <div class="text-center">
+            <h2 class="page-section-heading text-secondary mb-0 d-inline-block">FLASK PACKAGES</h2>
+        </div>
+        <!-- Icon Divider-->
+        <div class="divider-custom">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+        <!-- Intro Grid Items-->
+        <div class="row justify-content-center">
+            <!-- Intro Items-->
+        </div>
+    </div>
+</section>
+<section class="page-section bg-primary text-white mb-0" id="lastest_changes">
+    <div class="container">
+        <!-- About Section Heading-->
+        <div class="text-center">
+            <h2 class="page-section-heading d-inline-block text-white">LATEST CHANGES</h2>
+        </div>
+        <!-- Icon Divider-->
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+        <!-- About Section Content-->
+        <div class="row">
+            <div class="col-lg-4 ml-auto">
+                <p class="pre-wrap lead"></p>
+            </div>
+            <div class="col-lg-4 mr-auto">
+                <p class="pre-wrap lead"></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

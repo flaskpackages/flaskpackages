@@ -12,7 +12,7 @@ class Role(db.Document, RoleMixin):
     description = db.StringField(max_length=255)
 
 
-class User(db.Document, UserMixin):
+class user(db.Document, UserMixin):
     email = db.StringField(max_length=255)
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
@@ -58,5 +58,5 @@ class Project(db.Document):
 
 
 # Setup Flask-Security
-user_datastore = MongoEngineUserDatastore(db, User, Role)
+user_datastore = MongoEngineUserDatastore(db, user, Role)
 security = Security(app, user_datastore)

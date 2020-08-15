@@ -1,0 +1,9 @@
+{% for category in principal_categories %}
+{% if (loop.index - 1) % 5 == 0 %}
+<div class="item">
+    {% endif %}
+    <a href="TODO">{{category}}</a><br/>
+{% if (loop.index - 1) % 5 == 4 %}
+</div>
+{% endif %}
+{% endfor %}
