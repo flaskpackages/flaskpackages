@@ -56,7 +56,6 @@ class Project(db.Document):
     classifiers = db.EmbeddedDocumentField(Classifier)
 
     release = db.DateTimeField()
-    #category = db.ListField(db.Strin
 
 
 # Setup Flask-Security
