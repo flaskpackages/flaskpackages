@@ -34,6 +34,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       env:
+          SECR_KEY: ${{ secrets.SECR_KEY }}
+          PASSWDSALT: ${{ secrets.PASSWDSALT }}
           DBPASSWD: ${{ secrets.DBPASSWD }}
+          DBNAME: ${{ secrets.DBNAME }}
+          DBCONN: ${{ secrets.DBCONN }}
       run: |
         pytest
