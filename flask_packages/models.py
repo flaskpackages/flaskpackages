@@ -29,11 +29,16 @@ class Version(db.EmbeddedDocument):
 
 
 class Classifier(db.EmbeddedDocument):
-    development_status = db.ListField(db.StringField())
-    programming_language = db.ListField(db.StringField())
-    topic = db.ListField(db.StringField())
-    framework = db.ListField(db.StringField())
-
+    development_status = db.StringField()
+    programming_language = db.StringField()
+    topic = db.StringField()
+    framework = db.StringField()
+    license = db.StringField()
+    operating_system = db.StringField()
+    environment = db.StringField()
+    intended_audience = db.StringField()
+    natural_language = db.StringField()
+    typing = db.StringField()
 
 class GithubStats(db.EmbeddedDocument):
     stars = db.IntField()
@@ -55,7 +60,8 @@ class Project(db.Document):
     tags = db.ListField(db.StringField())
     classifiers = db.EmbeddedDocumentField(Classifier)
 
-    release = db.DateTimeField()
+    license = db.StringField()
+    released = db.StringField()
 
 
 # Setup Flask-Security

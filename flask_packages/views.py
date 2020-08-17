@@ -27,11 +27,13 @@ def home():
     categories = []
     for package in Project.objects:
         classifier = package.classifiers
-        topics = classifier['Topic']
-        for topic in topics:
-            topic = topic.split("::")
-            categories.append(topic[0].strip())
-        import pdb; pdb.set_trace()
+        try:
+            topics = classifier['Topic']
+            for topic in topics:
+                topic = topic.split("::")
+                categories.append(topic[0].strip())
+        except:
+            a=2
     return render_template('index.html', principal_categories=categories)
 
 @app.route('/favicon.ico')

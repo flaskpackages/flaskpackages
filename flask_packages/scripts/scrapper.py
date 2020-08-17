@@ -31,7 +31,6 @@ def search_packages(db):
         all_packages = soup.find_all('h3', {'class': 'package-snippet__title'})
 
         # all_packages is the information of all packages in a page.
-
         for package_info in all_packages:
             # NAME
             name = package_info.find('span', {'class': 'package-snippet__name'}).text
@@ -39,8 +38,6 @@ def search_packages(db):
             # if exists, check information for updates.
             # If not, add them to the db.
             find_on_db = list(collection.find({"name": name}))
-
-            print(name)
 
             if find_on_db == []:
                 add_package_to_db(package_info, name, collection)
@@ -194,6 +191,10 @@ def update_package_on_db(package_info, name, collection):
     print(TGREEN + "actualizando", name, ENDC)
     print('db version: ', version_db)
     print('new version: ', version)
+
+    if version == version_db:
+        return
+
     old_package = collection.find_one({"name": name})
 
     old_package["lastest_version"] = version
