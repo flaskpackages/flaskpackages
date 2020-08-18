@@ -33,6 +33,12 @@ class Classifier(db.EmbeddedDocument):
     programming_language = db.ListField(db.StringField())
     topic = db.ListField(db.StringField())
     framework = db.ListField(db.StringField())
+    license = db.StringField()
+    operating_system = db.StringField()
+    environment = db.StringField()
+    intended_audience = db.StringField()
+    natural_language = db.StringField()
+    typing = db.StringField()
 
 
 class GithubStats(db.EmbeddedDocument):
@@ -55,7 +61,8 @@ class Project(db.Document):
     tags = db.ListField(db.StringField())
     classifiers = db.EmbeddedDocumentField(Classifier)
 
-    release = db.DateTimeField()
+    released = db.DateTimeField()
+    license = db.StringField()
     #category = db.ListField(db.Strin
 
 
