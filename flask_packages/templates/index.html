@@ -35,12 +35,12 @@
         <!-- About Section Content-->
 <div class="list-group">
 {% for latest_project in latest_projects %}
-  <a href="{{latest_project.homepage}}" class="list-group-item list-group-item-action active">
+  <a href="/project/{{latest_project.name}}" class="list-group-item list-group-item-action active">
     <div class="d-flex w-100 justify-content-between">
       <h5 class="mb-1">{{latest_project.name}}</h5>
       <small>{{latest_project.released}}</small>
     </div>
-    <p class="mb-1">TEST</p>
+    <p class="mb-1">{{latest_project.lastest_version}}</p>
     <small>{{latest_project.license}}</small>
   </a>
 {% endfor %}

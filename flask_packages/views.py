@@ -21,11 +21,11 @@ def create_user():
     #        email="admin@admin.com",
     #        password=hash_password("admin"))
     return
-
 # Views
 @app.route("/")
 def home():
     categories = set()
+    latest_projects = Project.objects.order_by('-released').limit(5)
     for package in Project.objects:
         classifier = package.classifiers
         if 'topic' in classifier:
@@ -33,7 +33,7 @@ def home():
             topic = topic.split("::")
             categories.add(topic[0].strip())
 
-    return render_template('index.html', principal_categories=categories)
+    return render_template('index.html', principal_categories=categories, latest_projects=latest_projects)
 
 
 @app.route('/project/<package_name>')
