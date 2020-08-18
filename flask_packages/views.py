@@ -24,17 +24,12 @@ def create_user():
 # Views
 @app.route("/")
 def home():
-    categories = []
+    categories = set()
+    latest_projects = Project.objects.order_by('-released').limit(5)
     for package in Project.objects:
         classifier = package.classifiers
-        topics = classifier['Topic']
-        for topic in topics:
+        if 'topic' in classifier and classifier['topic']:
+            topic = classifier['topic']
             topic = topic.split("::")
-            categories.append(topic[0].strip())
-        import pdb; pdb.set_trace()
-    return render_template('index.html', principal_categories=categories)
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+            categories.add(topic[0].strip())
+    return render_template('index.html', principal_categories=categories, latest_projects=latest_projects)
