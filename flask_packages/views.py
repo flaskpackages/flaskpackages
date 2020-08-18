@@ -26,7 +26,6 @@ def create_user():
 @app.route("/")
 def home():
     categories = set()
-<<<<<<< HEAD
     for package in Project.objects:
         classifier = package.classifiers
         if 'topic' in classifier:
@@ -47,7 +46,6 @@ def project(package_name):
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
-=======
     latest_projects = Project.objects.order_by('-released').limit(5)
     for package in Project.objects:
         classifier = package.classifiers
@@ -56,4 +54,3 @@ def favicon():
             topic = topic.split("::")
             categories.add(topic[0].strip())
     return render_template('index.html', principal_categories=categories, latest_projects=latest_projects)
->>>>>>> upstream/master
