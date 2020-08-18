@@ -40,6 +40,7 @@ class Classifier(db.EmbeddedDocument):
     natural_language = db.StringField()
     typing = db.StringField()
 
+
 class GithubStats(db.EmbeddedDocument):
     stars = db.IntField()
     open_pr = db.IntField()
@@ -60,8 +61,8 @@ class Project(db.Document):
     tags = db.ListField(db.StringField())
     classifiers = db.EmbeddedDocumentField(Classifier)
 
+    released = db.DateTimeField()
     license = db.StringField()
-    released = db.StringField()
 
 
 # Setup Flask-Security
