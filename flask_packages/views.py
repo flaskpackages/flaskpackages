@@ -6,6 +6,7 @@ from flask_security import (
     MongoEngineUserDatastore,
     auth_required
 )
+
 from flask_security.utils import (hash_password)
 from flask_packages.web import app, db
 from flask_packages.models import user_datastore, Project
@@ -24,17 +25,22 @@ def create_user():
 # Views
 @app.route("/")
 def home():
-    categories = []
+    categories = set()
     for package in Project.objects:
         classifier = package.classifiers
-        try:
-            topics = classifier['Topic']
-            for topic in topics:
-                topic = topic.split("::")
-                categories.append(topic[0].strip())
-        except:
-            a=2
+        if 'topic' in classifier:
+            topic = classifier['topic']
+            topic = topic.split("::")
+            categories.add(topic[0].strip())
+
     return render_template('index.html', principal_categories=categories)
+
+
+@app.route('/project/<package_name>')
+def project(package_name):
+    project = Project.objects.get(name=package_name)
+    return render_template('package.html', package=project)
+
 
 @app.route('/favicon.ico')
 def favicon():

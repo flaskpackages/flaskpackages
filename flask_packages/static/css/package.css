@@ -1,0 +1,6 @@
+.package__info > p {
+    display: flex;
+    position: absolute;
+    color: gray;
+
+}

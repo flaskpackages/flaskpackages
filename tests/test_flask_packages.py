@@ -2,17 +2,15 @@
 
 """Tests for `flask_packages` package."""
 
-
 import unittest
 from click.testing import CliRunner
 
 from flask_packages import flask_packages
 from flask_packages import cli
 
-
 class TestFlask_packages(unittest.TestCase):
     """Tests for `flask_packages` package."""
-
+    
     def setUp(self):
         """Set up test fixtures, if any."""
 
@@ -21,7 +19,7 @@ class TestFlask_packages(unittest.TestCase):
 
     def test_000_something(self):
         """Test something."""
-
+    
     def test_command_line_interface(self):
         """Test the CLI."""
         runner = CliRunner()

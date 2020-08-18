@@ -3,7 +3,12 @@
         <button class="navbar-toggler navbar-toggler-right font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">Menu <i class="fas fa-bars"></i></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger">Search Bar</a>
+                  <nav class="navbar navbar-light bg-light">
+                    <form action='#' class="form-inline">
+                      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                  </nav>
                 </li>
                 <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="/login">SIGN IN</a>
                 </li>
@@ -15,7 +20,7 @@
 
     <div class="rotatingnav slide">
       <div class="rotatingnav-inner">
-        {% include 'test.html' %}
+        {% include 'rotatingnavbar.html' %}
       </div>
       
       <a class="left rotatingnav-control">
