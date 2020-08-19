@@ -183,8 +183,8 @@ def update_package_on_db(package_info, name, collection):
 
     version = package_info.find('span', {'class': 'package-snippet__version'}).text
     search = collection.find({"name": name})
-    for item in search:
-        version_db = (item["lastest_version"])
+    for objects in search:
+        version_db = (objects["lastest_version"])
 
     ENDC = '\033[m'
     TGREEN = '\033[32m'
@@ -286,9 +286,12 @@ def update_package_on_db(package_info, name, collection):
 
     res = []
 
+
     for version in versions_number:
         try:
             version_number = version.find('p', {'class': 'release__version'}).text.strip()
+            if version_number == version_db:
+                break
             date_box = version.find('p', {'class': 'release__version-date'})
             date = date_box.find('time')['datetime']
             url = 'https://pypi.org/project/'+name+'/'+version_number+'/#files'
@@ -312,7 +315,6 @@ def update_package_on_db(package_info, name, collection):
                 link_block = soup.find('th', {'scope': 'row'})
                 link = link_block.find('a')['href']
                 sha256 = soup.find('code').text
-            res.append({'version': version_number, 'date': date, 'link': link, 'sha256': sha256})
         except:
             continue
 
