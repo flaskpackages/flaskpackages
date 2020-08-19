@@ -1,6 +1,19 @@
-.package__info > p {
+.content {
+    max-width: 1200px;
+    margin-top: 2rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+.package__desc {
     display: flex;
-    position: absolute;
     color: gray;
+}
 
+.package_info {
+
+}
+
+.static_info{
+    width: 30%;
+    margin-left: auto;
 }

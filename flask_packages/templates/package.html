@@ -1,42 +1,75 @@
 {% extends "base.html" %}
 {% block content %}
-<link href='/static/css/package.css' rel='stylesheet' type='text/css' />
-<h1>{{package['name']}}</h1>
-<div className="package__info">
-    <p>{{package['lastest_version']}}</p>
-    <p>•</p>
-    <p>Publish: {{package['released']}}</p>
-</div>
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
+<link href='/static/css/package.css' rel='stylesheet'/>
+
+<div class="content">
+
+  <h1>{{package['name']}}</h1>
+  <div class="package__desc">
+      <p>{{package['lastest_version']}} • Published {{package['released']}}</p>
+  </div>
+
+  <ul class="nav nav-fill" id="myTab" role="tablist" >
+    <li class="nav-item" style="border-bottom: 2px solid #cb3837">
+      <a style="color: #cb3837" class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><i class="fas fa-box-open"></i> Description</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+    <li class="nav-item" style="border-bottom: 2px solid rgb(158, 119, 0)">
+      <a style="color: rgb(158, 119, 0)" class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fas fa-code-branch"></i> Versions</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false">Messages</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Settings</a>
+    <li class="nav-item" style="border-bottom: 2px solid rgb(20, 106, 144)">
+      <a style="color: rgb(20, 106, 144)" class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fas fa-tags"></i> Classifiers</a>
     </li>
   </ul>
-  
-  <div class="tab-content">
-    <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-        <h3>Description</h3>
-        <p>
-        {{package['description']|safe}}
-        <p>
-        </div>
-    <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-        <h3>PyPi</h3>
-        <p>{{package['pypi_link']}}</p>
+
+  <div class="package_info">
+    <div class="static_info" style="width: 30%;">
+      <code title="Copy Command to Clipboard">
+        <span>
+          "pip install" <!-- --> {{package['name']}}
+        </span>
+      </code>
     </div>
-    <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-    <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+    <div class="tab-content" style="width: 60%;">
+      <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <p>
+            {{package['description']|safe}}
+          <p>
+      </div>
+      <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+        <div id="accordion">
+          
+          {% for version in package['versions'] %}
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{version['sha256']}}" aria-expanded="false" aria-controls="collapse{{version['sha256']}}">
+                  {{version['version']}}
+                </button>
+              </h5>
+            </div>
+            <div id="collapse{{version['sha256']}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+              <div class="card-body">
+                <p> date: {{version['date']}} </p>
+                <p> link: {{version['link']}} </p>
+                <p> sha256: {{version['sha256']}} </p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+      <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
+        <p>
+          Classifiers
+        </p>
+      </div>
+    </div>
+
   </div>
-  
+</div>
   <script>
     $(function () {
       $('#myTab li:last-child a').tab('show')

@@ -180,7 +180,6 @@ def add_package_to_db(package_info, name, collection):
 
 def update_package_on_db(package_info, name, collection):
     # VERSION
-
     version = package_info.find('span', {'class': 'package-snippet__version'}).text
     search = collection.find({"name": name})
     for objects in search:
