@@ -17,63 +17,94 @@
       <a style="color: rgb(158, 119, 0)" class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><i class="fas fa-code-branch"></i> Versions</a>
     </li>
     <li class="nav-item" style="border-bottom: 2px solid rgb(20, 106, 144)">
-      <a style="color: rgb(20, 106, 144)" class="nav-link" id="messages-tab" data-toggle="tab" href="#messages" role="tab" aria-controls="messages" aria-selected="false"><i class="fas fa-tags"></i> Classifiers</a>
+      <a style="color: rgb(20, 106, 144)" class="nav-link" id="messages-tab" data-toggle="tab"  role="tab"  aria-selected="false"><i class="fas fa-tags"></i> Classifiers</a>
     </li>
   </ul>
 
   <div class="package_info">
-    <div class="static_info" style="width: 30%;">
-      <code title="Copy Command to Clipboard">
-        <span>
-          "pip install" <!-- --> {{package['name']}}
-        </span>
-      </code>
-    </div>
-    <div class="tab-content" style="width: 60%;">
+    <div class="tab-content">
       <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <p>
+          {{package['description']|safe}}
           <p>
-            {{package['description']|safe}}
-          <p>
-      </div>
-      <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-
-        <div id="accordion">
-          
-          {% for version in package['versions'] %}
-          <div class="card">
-            <div class="card-header" id="headingTwo">
-              <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{version['sha256']}}" aria-expanded="false" aria-controls="collapse{{version['sha256']}}">
-                  {{version['version']}}
-                </button>
-              </h5>
-            </div>
-            <div id="collapse{{version['sha256']}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-              <div class="card-body">
-                <p> date: {{version['date']}} </p>
-                <p> link: {{version['link']}} </p>
-                <p> sha256: {{version['sha256']}} </p>
+          </div>
+          <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            
+            <div id="accordion">
+              
+              {% for version in package['versions'] %}
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <button class="but btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{version['sha256']}}" aria-expanded="false" aria-controls="collapse{{version['sha256']}}">
+                      <div class="line">
+                      <p>{{version['version']}}</p>
+                      <div class="dotted_line"></div>                      
+                      <p>{{version['version']}}</p>
+                      </div>
+                    </button>
+                </div>
+                <div id="collapse{{version['sha256']}}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                  <div class="card-body">
+                    <p> Release date: {{version['date']}} </p>
+                    <a class="link" href="{{version['link']}}"> Download version </a>
+                    <p><code> {{version['sha256']}} </code></p>
+                  </div>
+                </div>
               </div>
+              {% endfor %}
+            </div>
+            
+          </div>
+          
+        </div>
+        
+        <div class="static_info">
+          <code class="code" title="Copy Command to Clipboard">
+            <span>
+              pip install {{package['name']}}
+            </span>
+          </code>
+          <div class="verlic">
+            <div class="version">
+              <p style="font-size: 1rem; color:grey ;">Version</p>
+              <p style="font-weight: bold;" >{{package['lastest_version']}}</p>
+            </div>
+            <div class="license">
+              <p style="font-size: 1rem; color:grey ;">License</p>
+              <p style="font-weight: bold;" >{{package['license']}}</p>
             </div>
           </div>
-          {% endfor %}
+          <div class="homepage">
+            <br>
+            <p style="font-size: 1rem; color:grey ;">homepage</p>
+            <a href="{{package['homepage']}}" style="color: black">
+              <p style="font-weight: bold;" ><i class="fas fa-link"></i> {{package['homepage']|truncate(47)}}</p>
+            </a>
+          </div>
+          <div class="maintainer">
+            <br>
+            <p style="font-size: 1rem; color:grey ;">maintainer</p>
+            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+              <p style="font-weight: bold;" ><i class="far fa-user"></i> {{package['maintainer']}}</p>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <p style="margin-left: 10px">  {{package['maintainer']}} Packages:</p>
+              <div class="dropdown-divider"></div>
+              {% for package in maintainer_packages %}
+                <a class="dropdown-item" href="/project/{{package['name']}}">{{package['name']}}</a>
+              {% endfor %}
+              </a>
+            </div>
+          </div>
         </div>
-
-      </div>
-
-      <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">
-        <p>
-          Classifiers
-        </p>
       </div>
     </div>
-
-  </div>
-</div>
-  <script>
+    <script>
     $(function () {
       $('#myTab li:last-child a').tab('show')
     })
   </script>
 
 {% endblock %}
+
+<div class="ee9e731a pa3 ph5-ns bb b--black-10 tl pointer z-999 w-100 flex flex-row justify-between d76ab310"><p class="ma0">✔ Copied to clipboard!</p><p class="_545224b8 ma0 f3 fw6">×</p></div>

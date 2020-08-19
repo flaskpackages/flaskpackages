@@ -40,9 +40,12 @@ def home():
 
 
 @app.route('/project/<package_name>')
-def project(package_name):
-    project = Project.objects.get(name=package_name)
-    return render_template('package.html', package=project)
+def package(package_name):
+    package = Project.objects.get(name=package_name)
+    maintainer = package['maintainer']
+    maintainer_packages = Project.objects(maintainer=maintainer)
+
+    return render_template('package.html', package=package, maintainer_packages=maintainer_packages)
 
 
 @app.route('/favicon.ico')
