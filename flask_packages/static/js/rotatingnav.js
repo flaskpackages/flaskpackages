@@ -14,8 +14,8 @@ if (typeof DEBUG === "undefined") {
 
   var rotatingnav = "rotatingnav",
       defaults = {
-        panelCount: 8,
-        activeCount: 4
+        panelCount: 2,
+        activeCount: 5
       };
 
   function RotatingNav ( element, options ) {
