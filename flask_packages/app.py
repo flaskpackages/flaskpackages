@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_caching import Cache
 
 flask_packages_enviro = os.environ['FLASK_PACKAGES_ENVIRO']
 split = flask_packages_enviro.split(',')
