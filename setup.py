@@ -16,6 +16,11 @@ requirements = [
     'Flask',
     'Flask-Security-Too',
     'flask-mongoengine',
+    'Flask-Caching==1.9.0',
+    'itsdangerous==1.1.0',
+    'Jinja2==2.11.2',
+    'MarkupSafe==1.1.1',
+    'Werkzeug==1.0.1'
 ]
 
 setup_requirements = []
