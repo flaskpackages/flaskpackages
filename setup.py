@@ -20,7 +20,9 @@ requirements = [
 
 setup_requirements = []
 
-test_requirements = []
+test_requirements = [
+    'factory_boy'
+]
 
 setup(
     author="Flask Packages",

@@ -17,5 +17,7 @@ def create_app(template_folder):
     app.config['SECURITY_PASSWORD_SALT'] = password_salt
     app.config['SECRET_KEY'] = secret_key
     app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
+
+    #app.config['MONGODB_HOST'] = {'mongomock://localhost'}
     app.config['MONGODB_HOST'] = {'mongodb+srv://user:'+db_password+'@'+db_connection+'/'+db_name+'?retryWrites=true&w=majority'}
     return app

@@ -12,7 +12,7 @@ class Role(db.Document, RoleMixin):
     description = db.StringField(max_length=255)
 
 
-class user(db.Document, UserMixin):
+class User(db.Document, UserMixin):
     email = db.StringField(max_length=255)
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
@@ -49,7 +49,7 @@ class GithubStats(db.EmbeddedDocument):
 
 class Project(db.Document):
     meta = {'collection': 'flask_packages'}
-    name = db.StringField(unique=True)
+    name = db.StringField(unique=True, null=False)
     description = db.StringField()
     lastest_version = db.StringField()
     maintainer = db.StringField()
@@ -66,5 +66,5 @@ class Project(db.Document):
 
 
 # Setup Flask-Security
-user_datastore = MongoEngineUserDatastore(db, user, Role)
+user_datastore = MongoEngineUserDatastore(db, User, Role)
 security = Security(app, user_datastore)

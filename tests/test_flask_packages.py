@@ -3,29 +3,14 @@
 """Tests for `flask_packages` package."""
 
 import unittest
-from click.testing import CliRunner
 
 from flask_packages import flask_packages
-from flask_packages import cli
+from tests.factories import ProjectFactory
+from flask_packages.models import Project
 
-class TestFlask_packages(unittest.TestCase):
-    """Tests for `flask_packages` package."""
-    
-    def setUp(self):
-        """Set up test fixtures, if any."""
 
-    def tearDown(self):
-        """Tear down test fixtures, if any."""
-
-    def test_000_something(self):
-        """Test something."""
-    
-    def test_command_line_interface(self):
-        """Test the CLI."""
-        runner = CliRunner()
-        result = runner.invoke(cli.main)
-        assert result.exit_code == 0
-        assert 'flask_packages.cli.main' in result.output
-        help_result = runner.invoke(cli.main, ['--help'])
-        assert help_result.exit_code == 0
-        assert '--help  Show this message and exit.' in help_result.output
+def test_index(app, client):
+    projects = ProjectFactory.create_batch(3)
+    res = client.get('/')
+    #Project.objects.insert(projects)
+    assert res.status_code == 200
