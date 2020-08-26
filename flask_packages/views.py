@@ -13,7 +13,10 @@ from flask_packages.models import user_datastore, Project
 
 from flask_mongoengine import MongoEngine
 import mongoengine as me
+from flask_caching import Cache
 
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+cache.init_app(app)
 
 # Create a user to test with
 @app.before_first_request
@@ -26,6 +29,7 @@ def create_user():
 
 # Views
 @app.route("/")
+@cache.cached(timeout=50)
 def home():
     categories = set()
     latest_projects = Project.objects.order_by('-released').limit(5)
