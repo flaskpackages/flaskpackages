@@ -11,16 +11,17 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
+    'Flask',
     'Click>=7.0',
     'bcrypt',
-    'Flask',
     'Flask-Security-Too',
     'flask-mongoengine',
-    'Flask-Caching==1.9.0',
-    'itsdangerous==1.1.0',
-    'Jinja2==2.11.2',
-    'MarkupSafe==1.1.1',
-    'Werkzeug==1.0.1'
+    'Flask-Caching',
+    'itsdangerous',
+    'Jinja2',
+    'MarkupSafe',
+    'Werkzeug',
+    'gunicorn'
 ]
 
 setup_requirements = []

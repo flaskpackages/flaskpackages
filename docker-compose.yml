@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+    backend:
+        image: flaskpackages
+        ports:
+            - 5000:5000
+        environment:
+            MONGODB_CONNECTION_STRING: mongodb://root:pass1@mongodb:27017/flaskpackages
+            PASSWORD_SALT: thisisasalt
+            SECRET_KEY: supersecrete
+        depends_on:
+            - mongodb
+    mongodb:
+        image: mongo:latest
+        ports:
+            - 27017:27017
+        volumes:
+            - /var/lib/mongodb:/data/db
