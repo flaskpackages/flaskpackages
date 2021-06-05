@@ -29,16 +29,16 @@
           <p>
           </div>
           <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            
+
             <div id="accordion">
-              
+
               {% for version in package['versions'] %}
               <div class="card">
                 <div class="card-header" id="headingTwo">
                     <button class="but btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{version['sha256']}}" aria-expanded="false" aria-controls="collapse{{version['sha256']}}">
                       <div class="line">
                       <p>{{version['version']}}</p>
-                      <div class="dotted_line"></div>                      
+                      <div class="dotted_line"></div>
                       <p>{{version['version']}}</p>
                       </div>
                     </button>
@@ -53,11 +53,11 @@
               </div>
               {% endfor %}
             </div>
-            
+
           </div>
-          
+
         </div>
-        
+
         <div class="static_info">
           <code class="code" title="Copy Command to Clipboard">
             <span>

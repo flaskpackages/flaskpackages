@@ -1,7 +1,4 @@
 import pytest
-import mongoengine as me
-
-from pathlib import Path
 
 from flask_packages.web import app as flask_app
 

@@ -1,10 +1,6 @@
+from flask_security import MongoEngineUserDatastore, RoleMixin, Security, UserMixin
 
-from flask_security import (
-    UserMixin,
-    RoleMixin
-)
 from flask_packages.web import app, db
-from flask_security import Security, MongoEngineUserDatastore
 
 
 class Role(db.Document, RoleMixin):
@@ -48,7 +44,7 @@ class GithubStats(db.EmbeddedDocument):
 
 
 class Project(db.Document):
-    meta = {'collection': 'flask_packages'}
+    meta = {"collection": "flask_packages"}
     name = db.StringField(unique=True, null=False)
     description = db.StringField()
     lastest_version = db.StringField()
