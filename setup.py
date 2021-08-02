@@ -10,19 +10,8 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = [
-    "Flask",
-    "Click>=7.0",
-    "bcrypt",
-    "Flask-Security-Too",
-    "flask-mongoengine",
-    "Flask-Caching",
-    "itsdangerous",
-    "Jinja2",
-    "MarkupSafe",
-    "Werkzeug",
-    "gunicorn",
-]
+with open('requirements.txt') as fp:
+    requirements = fp.read().splitlines()
 
 setup_requirements = []
 

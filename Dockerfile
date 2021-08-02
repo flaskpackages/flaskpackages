@@ -5,7 +5,7 @@ FROM python:${PYTHON_VERSION}
 COPY . /app
 WORKDIR /app
 
-RUN pip install flask; python setup.py install
+RUN -r requirements.txt
 
 EXPOSE 5000
 
