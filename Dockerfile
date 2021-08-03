@@ -4,6 +4,7 @@ FROM python:${PYTHON_VERSION}
 
 COPY . /app
 WORKDIR /app
+RUN chmod +x /app/entry-point.sh
 
 RUN pip install -r requirements.txt
 
