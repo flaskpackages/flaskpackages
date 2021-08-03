@@ -5,7 +5,7 @@ FROM python:${PYTHON_VERSION}
 COPY . /app
 WORKDIR /app
 
-RUN -r requirements.txt
+RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
