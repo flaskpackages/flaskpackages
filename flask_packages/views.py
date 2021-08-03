@@ -26,8 +26,8 @@ def home():
     categories = set()
     latest_projects = Project.objects.order_by("-released").limit(5)
     for package in Project.objects:
-        classifier = package.classifiers
-        if "topic" in classifier and classifier["topic"]:
+        classifier = package.classifiers or {}
+        if classifier.get("topic"):
             topic = classifier["topic"]
             topic = topic.split("::")
             categories.add(topic[0].strip())
