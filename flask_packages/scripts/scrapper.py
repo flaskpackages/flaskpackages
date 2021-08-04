@@ -1,6 +1,7 @@
 import datetime
 import os
 import urllib.parse
+import logging
 
 import requests
 from bs4 import BeautifulSoup
@@ -34,6 +35,7 @@ def search_packages(db):
         all_packages = soup.find_all("h3", {"class": "package-snippet__title"})
 
         # all_packages is the information of all packages in a page.
+        logging.info('Found %s at page %s', len(all_packages), count)
         for package_info in all_packages:
             # NAME
             name = package_info.find("span", {"class": "package-snippet__name"}).text
