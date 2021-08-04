@@ -213,9 +213,9 @@ def update_package_on_db(package_info, name, collection):
 
     ENDC = "\033[m"
     TGREEN = "\033[32m"
-    print(TGREEN + "actualizando", name, ENDC)
-    print("db version: ", version_db)
-    print("new version: ", version)
+    print(TGREEN + "Updating", name, ENDC)
+    print("DB version: ", version_db)
+    print("New version: ", version)
 
     if version == version_db:
         return
