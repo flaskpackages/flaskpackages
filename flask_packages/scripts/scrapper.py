@@ -8,13 +8,9 @@ from pymongo import MongoClient
 
 
 def db_connection():
-    mongopasswd = os.environ["DBPASSWD"]
+    mongo_connection_string = os.environ["MONGODB_CONNECTION_STRING"]
 
-    cluster = MongoClient(
-        "mongodb+srv://user:"
-        + mongopasswd
-        + "@packagescluster.3irbh.mongodb.net/test?retryWrites=true&w=majority"
-    )
+    cluster = MongoClient(mongo_connection_string)
     db = cluster["flask_db"]
 
     search_packages(db)
