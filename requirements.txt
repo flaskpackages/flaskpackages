@@ -21,3 +21,4 @@ email_validator
 requests
 pymongo
 beautifulsoup4
+lxml
