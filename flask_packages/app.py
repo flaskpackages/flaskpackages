@@ -12,4 +12,5 @@ def create_app(template_folder):
     app.config["SECURITY_PASSWORD_HASH"] = "bcrypt"
     app.config["MONGODB_DB"] = 'flask_db'
     app.config["MONGODB_HOST"] = {os.environ.get("MONGODB_CONNECTION_STRING", 'mongomock://localhost')}
+    app.config["SITEMAP_INCLUDE_RULES_WITHOUT_PARAMS"] = True
     return app

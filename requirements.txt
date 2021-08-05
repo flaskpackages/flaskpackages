@@ -22,3 +22,4 @@ requests
 pymongo
 beautifulsoup4
 lxml
+flask-sitemap
