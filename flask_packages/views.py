@@ -4,7 +4,7 @@ from flask import render_template, send_from_directory
 from flask_caching import Cache
 
 from flask_packages.models import Project
-from flask_packages.web import app
+from flask_packages.web import app, ext
 
 cache = Cache(app, config={"CACHE_TYPE": "simple"})
 cache.init_app(app)
@@ -46,6 +46,12 @@ def package(package_name):
     return render_template(
         "package.html", package=package, maintainer_packages=maintainer_packages
     )
+
+
+ext.register_generator
+def package_sitemap():
+    for project in Project.objects.all():
+        yield 'package', {'package_name': project.name}
 
 
 @app.route("/favicon.ico")

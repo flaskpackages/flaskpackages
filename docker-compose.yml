@@ -1,19 +1,36 @@
 version: '3.7'
 
 services:
+    ubuntu:
+        image: ubuntu
+        command: tail -f /dev/null
     backend:
-        image: flaskpackages
+        build:
+            context: .
+            dockerfile: Dockerfile
+        command: flask run --host=0.0.0.0
         ports:
             - 5000:5000
         environment:
-            MONGODB_CONNECTION_STRING: mongodb://root:pass1@mongodb:27017/flaskpackages
+            MONGODB_CONNECTION_STRING: mongodb://root:pass1@mongodb:27017/flask_db
             PASSWORD_SALT: thisisasalt
             SECRET_KEY: supersecrete
+            DEBUG: "True"
+            FLASK_ENV: development
+            FLASK_APP: /app/flask_packages/web.py
         depends_on:
             - mongodb
+        volumes:
+            - .:/app
     mongodb:
         image: mongo:latest
+        command: [--auth
+        ]
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: pass1
+            MONGO_INITDB_DATABASE: flask_db
         ports:
             - 27017:27017
         volumes:
-            - /var/lib/mongodb:/data/db
+            - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
