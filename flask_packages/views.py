@@ -48,7 +48,7 @@ def package(package_name):
     )
 
 
-ext.register_generator
+@ext.register_generator
 def package_sitemap():
     for project in Project.objects.all():
         yield 'package', {'package_name': project.name}
