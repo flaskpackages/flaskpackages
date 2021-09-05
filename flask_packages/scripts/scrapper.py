@@ -50,6 +50,26 @@ def search_packages(db):
                 update_package_on_db(package_info, name, collection)
 
 
+def process_classifiers(soup):
+    classifiers_div = soup.find("ul", {"class": "sidebar-section__classifiers"})
+
+    lis = classifiers_div.find_all("li")
+    classifiers = {}
+    topics = set()
+    for item in lis:
+        if item.find("strong"):
+            title = item.find("strong").text
+            tag = item.find("a")
+            tag = tag.text.strip()
+            title = title.lower()
+            title = title.replace(" ", "_")
+            if title == 'topic':
+                for topic_tag in tag.split("::"):
+                    topics.add(str(topic_tag.strip()))
+                
+            classifiers[title] = str(tag)
+    return classifiers, list(topics)
+
 def add_package_to_db(package_info, name, collection):
 
     ENDC = "\033[m"
@@ -109,19 +129,7 @@ def add_package_to_db(package_info, name, collection):
     license = license[0]
 
     # CLASSIFIERS
-
-    classifiers_div = soup.find("ul", {"class": "sidebar-section__classifiers"})
-
-    lis = classifiers_div.find_all("li")
-    classifiers = {}
-    for item in lis:
-        if item.find("strong"):
-            title = item.find("strong").text
-            tag = item.find("a")
-            tag = tag.text.strip()
-            title = title.lower()
-            title = title.replace(" ", "_")
-            classifiers[title] = str(tag)
+    classifiers, topics = process_classifiers(soup)
 
     # VERSIONS
 
@@ -199,6 +207,7 @@ def add_package_to_db(package_info, name, collection):
         "pypi_link": project_url,
         "released": str(released_date),
         "license": license,
+        "topics": topics
     }
 
     collection.insert_one(package)
@@ -258,19 +267,7 @@ def update_package_on_db(package_info, name, collection):
 
     # CLASSIFIERS
 
-    all_packages = soup.find("ul", {"class": "sidebar-section__classifiers"})
-
-    lis = all_packages.find_all("li")
-    classifiers = {}
-    for item in lis:
-        if item.find("strong"):
-            title = item.find("strong").text
-            all_tags = item.find_all("a")
-            for tag in all_tags:
-                tag = tag.text.strip()
-                title = title.lower()
-                title = title.replace(" ", "_")
-            classifiers[title] = str(tag)
+    classifiers, topics = process_classifiers(soup)
 
     # DESCRIPTION
 

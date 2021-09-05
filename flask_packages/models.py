@@ -27,7 +27,7 @@ class Version(db.EmbeddedDocument):
 class Classifier(db.EmbeddedDocument):
     development_status = db.StringField()
     programming_language = db.StringField()
-    topic = db.StringField()
+    topic = db.ListField(db.StringField())
     framework = db.StringField()
     license = db.StringField()
     operating_system = db.StringField()
@@ -59,6 +59,8 @@ class Project(db.Document):
 
     released = db.DateTimeField()
     license = db.StringField()
+
+    topics = db.ListField(db.StringField())
 
 
 # Setup Flask-Security

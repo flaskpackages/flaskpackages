@@ -19,18 +19,12 @@ def create_user():
     return
 
 
-# Views
 @app.route("/")
 @cache.cached(timeout=50)
 def home():
     categories = set()
     latest_projects = Project.objects.order_by("-released").limit(5)
-    for package in Project.objects:
-        classifier = package.classifiers
-        if classifier and "topic" in classifier:
-            topic = classifier["topic"]
-            topic = topic.split("::")
-            categories.add(topic[0].strip())
+    categories = Project.objects.distinct("topics")
 
     return render_template(
         "index.html", principal_categories=categories, latest_projects=latest_projects
@@ -45,6 +39,15 @@ def package(package_name):
 
     return render_template(
         "package.html", package=package, maintainer_packages=maintainer_packages
+    )
+
+
+@app.route("/category/<category_name>")
+def category(category_name):
+    packages = Project.objects(topics=category_name)
+
+    return render_template(
+        "category.html", packages=packages,
     )
 
 
