@@ -126,7 +126,10 @@ def add_package_to_db(package_info, name, collection):
             except Exception:
                 pass
     license = list(set(license))
-    license = license[0]
+    if license:
+        license = license[0]
+    else:
+        license = ""
 
     # CLASSIFIERS
     classifiers, topics = process_classifiers(soup)
